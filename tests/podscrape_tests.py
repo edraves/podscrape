@@ -2,6 +2,7 @@ from podscrape.scraper import Scraper
 from nose.tools import *
 
 first_page_filename = "./tests/itunes_arts_page.html"
+page_num_filename = "./tests/itunes_arts_page_letter_a.html"
 
 def test_make_soup():
     scraper = Scraper(first_page_filename)
@@ -29,3 +30,12 @@ def test_get_subgenre_urls():
 
     assert_equal(len(subgenre_urls), 6)
     assert_equal(subgenre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts-design/id1402?mt=2")
+
+def test_get_number_of_pages():
+    scraper = Scraper(page_num_filename)
+    num_pages = scraper.get_number_of_pages()
+    assert_equal(num_pages, 7)
+
+    scraper = Scraper(first_page_filename)
+    num_pages = scraper.get_number_of_pages()
+    assert_equal(num_pages, 0)

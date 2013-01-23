@@ -30,6 +30,18 @@ class Scraper(object):
             urls.append(tag.get('href'))
         return urls
 
+    def get_number_of_pages(self):
+        page_soup = self.soup.find("ul", class_="list paginate")
+
+        if (page_soup is None):
+            return 0
+        else:
+            # I know this will find the numbers plus the next link
+            # But due to an off by one error on the site, there's
+            # always one link left on an unlisted page.
+            a_list = page_soup.find_all("a")
+            return len(a_list)
+
 def make_soup_from_file(filename):
     handle = open(filename)
     text = handle.read()
