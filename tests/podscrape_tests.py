@@ -13,4 +13,12 @@ def test_get_itunes_podcast_urls():
     itunes_urls = scraper.get_itunes_podcast_urls()
 
     assert_equal(len(itunes_urls), 240)
-    assert_equal(itunes_urls[0].get("href"), "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
+    assert_equal(itunes_urls[0], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
+
+def test_get_top_level_genre_urls():
+    scraper = Scraper(first_page_filename)
+    genre_urls = scraper.get_top_level_genre_urls()
+
+    assert_equal(len(genre_urls), 16)
+    assert_equal(genre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2")
+    assert_equal(genre_urls[1], "https://itunes.apple.com/us/genre/podcasts-business/id1321?mt=2")
