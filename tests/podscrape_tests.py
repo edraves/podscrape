@@ -22,3 +22,10 @@ def test_get_top_level_genre_urls():
     assert_equal(len(genre_urls), 16)
     assert_equal(genre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2")
     assert_equal(genre_urls[1], "https://itunes.apple.com/us/genre/podcasts-business/id1321?mt=2")
+
+def test_get_subgenre_urls():
+    scraper = Scraper(first_page_filename)
+    subgenre_urls = scraper.get_subgenre_urls()
+
+    assert_equal(len(subgenre_urls), 6)
+    assert_equal(subgenre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts-design/id1402?mt=2")
