@@ -13,9 +13,13 @@ class Scraper(object):
             urls.append(tag.get('href'))
         return urls
 
-    def get_top_level_genre_urls(self):
+    def get_top_level_genre_tags(self):
         genre_soup = self.soup.find("div", id="genre-nav")
         a_list = genre_soup.find_all("a", class_="top-level-genre")
+        return a_list
+
+    def get_top_level_genre_urls(self):
+        a_list = self.get_top_level_genre_tags()
         urls = []
         for tag in a_list:
             urls.append(tag.get('href'))

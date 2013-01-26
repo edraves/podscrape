@@ -24,6 +24,14 @@ def test_get_top_level_genre_urls():
     assert_equal(genre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2")
     assert_equal(genre_urls[1], "https://itunes.apple.com/us/genre/podcasts-business/id1321?mt=2")
 
+def test_get_top_level_genre_tags():
+    scraper = Scraper(first_page_filename)
+    genre_urls = scraper.get_top_level_genre_tags()
+
+    assert_equal(len(genre_urls), 16)
+    assert_equal(genre_urls[0].string, "Arts")
+    assert_equal(genre_urls[1].string, "Business")
+
 def test_get_subgenre_urls():
     scraper = Scraper(first_page_filename)
     subgenre_urls = scraper.get_subgenre_urls()
