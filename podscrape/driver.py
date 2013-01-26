@@ -12,7 +12,17 @@ class Driver:
     def populate_state(self):
         scraper = self.fetcher.fetch(self.start)
         self.genres = scraper.get_top_level_genre_tags()
-        self.current_genre = self.genres.pop(0)
+
+        #Loop through to see which tag has selected in the class
+        for tag in self.genres:
+            if "selected" in tag['class']:
+                self.current_genre = tag
+                break
+
+        #We want to slice out the preceding genres, so we start in the
+        #right place. Add one to remove the current genre from the list
+        current_index = self.genres.index(self.current_genre) + 1
+        self.genres[0:current_index] = []
 #first cycle through pages, then letters, then subgenres, then move to the
 #next genre.
 #Remember that the first page of any letter is no page at all, to scrape the

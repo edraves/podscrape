@@ -75,6 +75,11 @@ def test_next_genre():
     genre = driver.next_genre()
     assert_equal(genre, None)
 
+def test_next_genre_from_middle():
+    driver = Driver(test_url3, MockFetcher(fetch_values))
+    genre = driver.next_genre()
+    assert_equal(genre.text, "Sports & Recreation")
+
 """
 Driver notes
 Driver(url)
