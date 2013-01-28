@@ -3,6 +3,7 @@ from nose.tools import *
 
 first_page_filename = "./tests/itunes_arts_page.html"
 page_num_filename = "./tests/itunes_arts_page_letter_a.html"
+music_page_filename = "./tests/itunes_music_page.html"
 
 def test_make_soup():
     scraper = Scraper(first_page_filename)
@@ -38,6 +39,26 @@ def test_get_subgenre_urls():
 
     assert_equal(len(subgenre_urls), 6)
     assert_equal(subgenre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts-design/id1402?mt=2")
+
+def test_get_subgenre_urls_no_entries():
+    scraper = Scraper(music_page_filename)
+    subgenre_urls = scraper.get_subgenre_urls()
+
+    assert_equal(subgenre_urls, None)
+
+def test_get_subgenre_tags():
+    scraper = Scraper(first_page_filename)
+    subgenre_tags = scraper.get_subgenre_tags()
+
+    assert_equal(len(subgenre_tags), 6)
+    assert_equal(subgenre_tags[0].string, "Design")
+    assert_equal(subgenre_tags[1].string, "Fashion & Beauty")
+
+def test_get_subgenre_tags_no_entries():
+    scraper = Scraper(music_page_filename)
+    subgenre_tags = scraper.get_subgenre_tags()
+
+    assert_equal(subgenre_tags, None)
 
 def test_get_number_of_pages():
     scraper = Scraper(page_num_filename)

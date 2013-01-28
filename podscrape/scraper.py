@@ -25,14 +25,24 @@ class Scraper(object):
             urls.append(tag.get('href'))
         return urls
 
-    def get_subgenre_urls(self):
+    def get_subgenre_tags(self):
         genre_soup = self.soup.find("div", id="genre-nav")
         subgenre_soup = genre_soup.find(class_="list top-level-subgenres")
-        a_list = subgenre_soup.find_all("a")
-        urls = []
-        for tag in a_list:
-            urls.append(tag.get('href'))
-        return urls
+        if subgenre_soup:
+            a_list = subgenre_soup.find_all("a")
+        else:
+            a_list = None
+        return a_list
+
+    def get_subgenre_urls(self):
+        a_list = self.get_subgenre_tags()
+        if a_list:
+            urls = []
+            for tag in a_list:
+                urls.append(tag.get('href'))
+            return urls
+        else:
+            return None
 
     def get_number_of_pages(self):
         page_soup = self.soup.find("ul", class_="list paginate")
