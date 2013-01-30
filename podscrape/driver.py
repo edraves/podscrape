@@ -5,6 +5,7 @@ class Driver:
         self.start = starting_url
         self.fetcher = fetcher
         self.history = []
+        self.letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
         self.current_letter, self.current_page = parse_url(starting_url)
         self.populate_state()
 
@@ -79,9 +80,20 @@ class Driver:
             self.current_subgenre = None
         return self.current_subgenre
 
+    def next_letter(self):
+        if self.current_letter:
+            if self.current_letter is "#":
+                self.current_letter = None
+            else:
+                index = self.letters.find(self.current_letter)
+                self.current_letter = self.letters[index + 1]
+                return self.current_letter
+        else:
+            self.current_letter = self.letters[0]
+            return self.current_letter
 #parse out current letter, and page.
 def parse_url(url):
-    letter = ''
+    letter = None
     page = 0
     match = re.search(r"http.*\?.*letter=([A-Z#])", url)
     if match:
