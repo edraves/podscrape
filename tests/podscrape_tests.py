@@ -68,3 +68,16 @@ def test_get_number_of_pages():
     scraper = Scraper(first_page_filename)
     num_pages = scraper.get_number_of_pages()
     assert_equal(num_pages, 0)
+
+def test_get_letter_tags():
+    scraper = Scraper(first_page_filename)
+    letter_tags = scraper.get_letter_tags()
+    assert_equal(letter_tags[0].string, "A")
+    assert_equal(letter_tags[-1].string, "#")
+
+def test_get_page_tags():
+    scraper = Scraper(page_num_filename)
+    page_tags = scraper.get_page_tags()
+    assert_equal(page_tags[0].string, "1")
+    assert_equal(page_tags[-1].string, "7")
+

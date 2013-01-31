@@ -56,6 +56,30 @@ class Scraper(object):
             a_list = page_soup.find_all("a")
             return len(a_list)
 
+    def get_letter_tags(self):
+        letter_soup = self.soup.find("ul", class_="list alpha")
+        if letter_soup:
+            a_list = letter_soup.find_all("a")
+        else:
+            a_list = None
+        return a_list
+
+    def get_page_tags(self):
+        page_soup = self.soup.find("ul", class_="list paginate")
+        a_list = None
+        if page_soup:
+            # I know this will find the numbers plus the next link
+            # But due to an off by one error on the site, there's
+            # always one link left on an unlisted page.
+            a_list = page_soup.find_all("a")
+            last_href = a_list[-1]['href']
+            last_page_number = len(a_list)
+            last_page_string = "page=" + str(last_page_number)
+            last_href = last_href.replace("page=2", last_page_string)
+            a_list[-1]['href'] = last_href
+            a_list[-1].string = str(last_page_number)
+        return a_list
+
 def make_soup_from_file(filename):
     handle = open(filename)
     text = handle.read()
