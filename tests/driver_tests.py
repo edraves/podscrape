@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from tests.mocks import MockFetcher
 from podscrape.driver import Driver, parse_url
 
-test_url = "http://itunes.apple.com/genre/podcasts-arts/id1301?mt=2"
-test_url2 = "http://itunes.apple.com/genre/podcasts-arts/id1301?mt=2&letter=A"
+test_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2"
+test_url2 = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A"
 test_url3 = "https://itunes.apple.com/us/genre/podcasts-society-culture/id1324?mt=2&letter=N&page=2#page"
 test_url4 = "https://itunes.apple.com/us/genre/podcasts-music/id1310?mt=2"
 test_url5 = "https://itunes.apple.com/us/genre/podcasts-arts-food/id1306?mt=2"
@@ -142,6 +142,23 @@ def test_next_letter_from_middle():
     driver = Driver(test_url3, MockFetcher(fetch_values))
     letter = driver.next_letter()
     assert_equal(letter, "O")
+
+#def test_next_url():
+#    driver = Driver(test_url, MockFetcher(fetch_values))
+#    assert_equal(driver.next_url(), test_url2)
+
+#    expected_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A&page=2#page"
+#    assert_equal(driver.next_url(), expected_url)
+#def test_starting_state():
+#    driver = Driver(test_url2, MockFetcher(fetch_values))
+#    assert_equal(driver.letters[0].string, "A")
+#    assert_equal(driver.pages[0].string, "2")
+
+#    driver = Driver(test_url3, MockFetcher(fetch_values))
+#    assert_equal(driver.letters[0].string, "N")
+#    assert_equal(driver.pages[0].string, "2")
+
+
 
 """
 Driver notes

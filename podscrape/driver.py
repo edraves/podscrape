@@ -5,7 +5,8 @@ class Driver:
         self.start = starting_url
         self.fetcher = fetcher
         self.history = []
-        self.letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
+        self.alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
+        self.unicode_alpha = u"ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
         self.current_letter, self.current_page = parse_url(starting_url)
         self.populate_state()
 
@@ -14,6 +15,28 @@ class Driver:
         scraper = self.fetcher.fetch(self.start)
         self.genres = scraper.get_top_level_genre_tags()
         self.subgenres = scraper.get_subgenre_tags()
+        self.letters = scraper.get_letter_tags()
+        self.pages = scraper.get_page_tags()
+
+#        if self.letters:
+#            if self.current_letter:
+#                print "have letters, and current_letter"
+#                for idx, tag in enumerate(self.letters):
+#                    if tag['href'].find(unicode(self.start)) >= 0:
+#                        print "Url is in letters, index: %r" % idx
+#                        self.letters[0:idx] = []
+
+#            elif self.pages:
+#                print "pages exists"
+#                print "self.start: %r" % self.start
+#                for idx, tag in enumerate(self.pages):
+#                    print "href: %r" % tag['href']
+#                    if tag['href'].find(unicode(self.start)) >= 0:
+#                        print "Url is in pages, index: ", idx
+#                        self.pages[0:idx] = []
+#                        letter_index = self.unicode_alpha.find(self.current_letter)
+#                        print "letter index: %r" % letter_index
+#                        self.letters[0:letter_index] = []
 
         #Loop through to see which tag has selected in the class
         self.current_subgenre = self.get_currently_selected_subgenre()
@@ -60,11 +83,15 @@ class Driver:
 #next genre.
 #Remember that the first page of any letter is no page at all, to scrape the
 #popular page.
-#    def next_page(self):
-#        #if (self.current_page < self.last_page):
-#        next_url = self.start
-#        self.history.append(next_url)
-#        return next_url
+#    def next_url(self):
+#        tag = None
+#        if self.pages:
+#            tag = self.pages.pop(0)
+#        elif self.letters:
+#            tag = self.letters.pop(0)
+#        if tag:
+#            self.history.append(tag)
+#        return tag['href']
 
     def next_genre(self):
         if (self.genres):
@@ -85,11 +112,11 @@ class Driver:
             if self.current_letter is "#":
                 self.current_letter = None
             else:
-                index = self.letters.find(self.current_letter)
-                self.current_letter = self.letters[index + 1]
+                index = self.alpha.find(self.current_letter)
+                self.current_letter = self.alpha[index + 1]
                 return self.current_letter
         else:
-            self.current_letter = self.letters[0]
+            self.current_letter = self.alpha[0]
             return self.current_letter
 #parse out current letter, and page.
 def parse_url(url):
