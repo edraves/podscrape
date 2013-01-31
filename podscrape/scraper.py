@@ -78,6 +78,7 @@ class Scraper(object):
             last_href = last_href.replace("page=2", last_page_string)
             a_list[-1]['href'] = last_href
             a_list[-1].string = str(last_page_number)
+            a_list.pop(0)
         return a_list
 
 def make_soup_from_file(filename):

@@ -78,6 +78,6 @@ def test_get_letter_tags():
 def test_get_page_tags():
     scraper = Scraper(page_num_filename)
     page_tags = scraper.get_page_tags()
-    assert_equal(page_tags[0].string, "1")
+    assert_equal(page_tags[0].string, "2")
     assert_equal(page_tags[-1].string, "7")
 
