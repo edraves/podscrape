@@ -118,6 +118,22 @@ class Driver:
         else:
             self.current_letter = self.alpha[0]
             return self.current_letter
+
+    def write_urls_to_file(self, source_url, genre, subgenre, url_list):
+        f = open(self.output_file, 'a')
+        letter, page = parse_url(source_url)
+        if not subgenre:
+            subgenre = "none"
+        if not letter:
+            letter = "Popular"
+        page = str(page)
+        output_list = [source_url, genre, subgenre, letter, page]
+        output_list.extend(url_list)
+        line = "\t".join(output_list)
+        f.write(line)
+        f.write("\n")
+        f.close()        
+        
 #parse out current letter, and page.
 def parse_url(url):
     letter = None

@@ -2,6 +2,7 @@ from nose.tools import *
 from bs4 import BeautifulSoup
 from tests.mocks import MockFetcher
 from podscrape.driver import Driver, parse_url
+from podscrape.scraper import Scraper
 
 test_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2"
 test_url2 = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A"
@@ -158,8 +159,32 @@ def test_next_letter_from_middle():
 #    assert_equal(driver.letters[0].string, "N")
 #    assert_equal(driver.pages[0].string, "2")
 
+def test_print_urls():
+    driver = Driver(test_url, MockFetcher(fetch_values))
+    #TODO Start here. Print the urls to a file.
+    driver.output_file = "./tests/output"
+    f = open(driver.output_file, 'w')
+    f.truncate()
+    f.close()
+    scraper = Scraper(test_url_file)
+    url_list = scraper.get_itunes_podcast_urls()
+    source_url = test_url
+    genre = "Arts"
+    subgenre = None
+    driver.write_urls_to_file(source_url, genre, subgenre, url_list)
 
-
+    f = open(driver.output_file)
+    text = f.read()
+    f.close()
+    split_text = text.split("\t")
+    assert_equal(split_text[0], source_url)
+    assert_equal(split_text[1], genre)
+    assert_equal(split_text[2], "none")
+    assert_equal(split_text[3], "Popular")
+    assert_equal(split_text[4], "0")
+    assert_equal(split_text[5], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
+    assert_equal(split_text[-1], "https://itunes.apple.com/us/podcast/darker-projects-byron-chronicles/id160067986?mt=2\n")
+    assert_equal(len(split_text), 245)
 """
 Driver notes
 Driver(url)
