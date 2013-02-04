@@ -162,11 +162,15 @@ def test_process_page():
     assert_equal(len(driver.letters), 27)
 
 def test_next_url():
-    driver = Driver(test_url, MockFetcher(fetch_values))
-    assert_equal(driver.next_url(), test_url2)
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url, fetcher)
+    next_url = driver.next_url()
+    assert_equal(next_url, test_url2)
+    urls = driver.process_page(fetcher.fetch(next_url))
+    next_url = driver.next_url()
+    expected_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A&page=2#page"
+    assert_equal(next_url, expected_url)
 
-#    expected_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A&page=2#page"
-#    assert_equal(driver.next_url(), expected_url)
 #def test_starting_state():
 #    driver = Driver(test_url2, MockFetcher(fetch_values))
 #    assert_equal(driver.letters[0].string, "A")

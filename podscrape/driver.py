@@ -83,19 +83,19 @@ class Driver:
 #next genre.
 #Remember that the first page of any letter is no page at all, to scrape the
 #popular page.
-#    def next_url(self):
-#        tag = None
-#        if self.pages:
-#            tag = self.pages.pop(0)
-#        elif self.letters:
-#            tag = self.letters.pop(0)
-#        elif self.subgenres:
-#            tag = self.next_subgenre()
-#        elif self.genres:
-#            tag = self.next_genre()
-#        if tag:
-#            self.history.append(tag)
-#        return tag['href']
+    def next_url(self):
+        tag = None
+        if self.pages:
+            tag = self.pages.pop(0)
+        elif self.letters:
+            tag = self.letters.pop(0)
+        elif self.subgenres:
+            tag = self.next_subgenre()
+        elif self.genres:
+            tag = self.next_genre()
+        if tag:
+            self.history.append(tag)
+        return tag['href']
 
     def next_genre(self):
         if (self.genres):
