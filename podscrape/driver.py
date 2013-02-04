@@ -89,6 +89,10 @@ class Driver:
 #            tag = self.pages.pop(0)
 #        elif self.letters:
 #            tag = self.letters.pop(0)
+#        elif self.subgenres:
+#            tag = self.next_subgenre()
+#        elif self.genres:
+#            tag = self.next_genre()
 #        if tag:
 #            self.history.append(tag)
 #        return tag['href']
@@ -118,6 +122,16 @@ class Driver:
         else:
             self.current_letter = self.alpha[0]
             return self.current_letter
+
+    def process_page(self, scraper):
+        if not self.pages:
+            self.pages = scraper.get_page_tags()
+        if not self.letters:
+            self.letters = scraper.get_letter_tags()
+        if not self.subgenres:
+            self.subgenres = scraper.get_subgenre_tags()
+
+        return scraper.get_itunes_podcast_urls()
 
     def write_urls_to_file(self, source_url, genre, subgenre, url_list):
         f = open(self.output_file, 'a')

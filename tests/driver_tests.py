@@ -144,9 +144,26 @@ def test_next_letter_from_middle():
     letter = driver.next_letter()
     assert_equal(letter, "O")
 
-#def test_next_url():
-#    driver = Driver(test_url, MockFetcher(fetch_values))
-#    assert_equal(driver.next_url(), test_url2)
+def test_process_page():
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url, fetcher)
+    assert_equal(len(driver.letters), 27)
+    podcast_urls = driver.process_page(fetcher.fetch(test_url))
+    assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
+    assert_equal(podcast_urls[-1], "https://itunes.apple.com/us/podcast/darker-projects-byron-chronicles/id160067986?mt=2")
+    assert_equal(driver.pages, None)
+    assert_equal(len(driver.letters), 27)
+
+    driver = Driver(test_url2, fetcher)
+    podcast_urls = driver.process_page(fetcher.fetch(test_url2))
+    assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/a-gs-picture-this!/id333260901")
+    assert_equal(podcast_urls[-1], "https://itunes.apple.com/us/podcast/aireslibre-travel-show-blog/id403538684")
+    assert_equal(len(driver.pages), 6)
+    assert_equal(len(driver.letters), 27)
+
+def test_next_url():
+    driver = Driver(test_url, MockFetcher(fetch_values))
+    assert_equal(driver.next_url(), test_url2)
 
 #    expected_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A&page=2#page"
 #    assert_equal(driver.next_url(), expected_url)
