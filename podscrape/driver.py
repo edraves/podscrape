@@ -133,6 +133,17 @@ class Driver:
 
         return scraper.get_itunes_podcast_urls()
 
+    def return_urls_not_in_history(self, new_urls):
+        return_urls = []
+        for item in new_urls:
+            if item not in self.history:
+                return_urls.append(item)
+
+        if len(return_urls) == 0:
+            return_urls = None
+
+        return return_urls
+
     def write_urls_to_file(self, source_url, genre, subgenre, url_list):
         f = open(self.output_file, 'a')
         letter, page = parse_url(source_url)

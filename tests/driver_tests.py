@@ -206,6 +206,19 @@ def test_print_urls():
     assert_equal(split_text[5], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
     assert_equal(split_text[-1], "https://itunes.apple.com/us/podcast/darker-projects-byron-chronicles/id160067986?mt=2\n")
     assert_equal(len(split_text), 245)
+
+def test_return_urls_not_in_history():
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url, fetcher)
+    urls = ['B', 'C', 'D', 'E']
+    driver.history = ['A', 'B', 'C']
+    new_urls = driver.return_urls_not_in_history(urls)
+    assert_equal(new_urls, ['D', 'E'])
+
+    urls = ['B', 'C']
+    driver.history = ['A', 'B', 'C']
+    new_urls = driver.return_urls_not_in_history(urls)
+    assert_equal(new_urls, None)
 """
 Driver notes
 Driver(url)
