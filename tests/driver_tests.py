@@ -207,18 +207,36 @@ def test_print_urls():
     assert_equal(split_text[-1], "https://itunes.apple.com/us/podcast/darker-projects-byron-chronicles/id160067986?mt=2\n")
     assert_equal(len(split_text), 245)
 
-def test_return_urls_not_in_history():
+def test_return_urls_not_in_history_real_tags():
     fetcher = MockFetcher(fetch_values)
-    driver = Driver(test_url, fetcher)
-    urls = ['B', 'C', 'D', 'E']
-    driver.history = ['A', 'B', 'C']
-    new_urls = driver.return_urls_not_in_history(urls)
-    assert_equal(new_urls, ['D', 'E'])
+    driver = Driver(test_url3, fetcher)
 
-    urls = ['B', 'C']
-    driver.history = ['A', 'B', 'C']
-    new_urls = driver.return_urls_not_in_history(urls)
-    assert_equal(new_urls, None)
+    scraper = Scraper(test_url3_file)
+    tags = scraper.get_letter_tags()
+    #Using two different scrapers because the tags will come from 
+    #two different scrapers in real life
+    scraper2 = Scraper(test_url3_file)
+    tags2 = scraper2.get_letter_tags()
+
+    driver.history = tags2[0:3]
+    new_urls = driver.return_urls_not_in_history(tags)
+    assert_equal(new_urls, tags[3:])
+
+def test_return_urls_not_in_history_real_tags_single_element():
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url3, fetcher)
+
+    scraper = Scraper(test_url3_file)
+    tags = scraper.get_letter_tags()
+    #Using two different scrapers because the tags will come from 
+    #two different scrapers in real life
+    scraper2 = Scraper(test_url3_file)
+    tags2 = scraper2.get_letter_tags()
+
+    driver.history = tags2[0]
+    new_urls = driver.return_urls_not_in_history(tags)
+    assert_equal(new_urls, tags[1:])
+
 """
 Driver notes
 Driver(url)

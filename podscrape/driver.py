@@ -1,3 +1,4 @@
+from bs4 import Tag
 import re
 class Driver:
 
@@ -136,8 +137,22 @@ class Driver:
     def return_urls_not_in_history(self, new_urls):
         return_urls = []
         for item in new_urls:
-            if item not in self.history:
-                return_urls.append(item)
+             item_already_scraped = False
+
+             if isinstance(self.history, Tag):
+                 if item['href'] == self.history['href']:
+                     item_already_scraped = True
+
+             else:
+                 for previous_url in self.history:
+                     print "item: %r", (item)
+                     print "previous: %r", (previous_url)
+                     if item['href'] == previous_url['href']:
+                         item_already_scraped = True
+                         break
+
+             if not item_already_scraped:
+                 return_urls.append(item)
 
         if len(return_urls) == 0:
             return_urls = None
