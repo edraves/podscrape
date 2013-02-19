@@ -1,9 +1,9 @@
 from podscrape.scraper import Scraper
 from nose.tools import *
 
-first_page_filename = "./tests/itunes_arts_page.html"
-page_num_filename = "./tests/itunes_arts_page_letter_a.html"
-music_page_filename = "./tests/itunes_music_page.html"
+first_page_filename = "./tests/testcases/itunes_arts_page.html"
+page_num_filename = "./tests/testcases/itunes_arts_page_letter_a.html"
+music_page_filename = "./tests/testcases/itunes_music_page.html"
 
 def test_make_soup():
     scraper = Scraper(first_page_filename)

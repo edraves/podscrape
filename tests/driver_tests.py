@@ -10,11 +10,11 @@ test_url3 = "https://itunes.apple.com/us/genre/podcasts-society-culture/id1324?m
 test_url4 = "https://itunes.apple.com/us/genre/podcasts-music/id1310?mt=2"
 test_url5 = "https://itunes.apple.com/us/genre/podcasts-arts-food/id1306?mt=2"
 
-test_url_file = "./tests/itunes_arts_page.html"
-test_url2_file = "./tests/itunes_arts_page_letter_a.html"
-test_url3_file = "./tests/itunes_society_and_culture_n_2.html"
-test_url4_file = "./tests/itunes_music_page.html"
-test_url5_file = "./tests/itunes_arts_food_page.html"
+test_url_file = "./tests/testcases/itunes_arts_page.html"
+test_url2_file = "./tests/testcases/itunes_arts_page_letter_a.html"
+test_url3_file = "./tests/testcases/itunes_society_and_culture_n_2.html"
+test_url4_file = "./tests/testcases/itunes_music_page.html"
+test_url5_file = "./tests/testcases/itunes_arts_food_page.html"
 fetch_values = {
     test_url: test_url_file,
     test_url2: test_url2_file,
@@ -183,7 +183,7 @@ def test_next_url():
 def test_print_urls():
     driver = Driver(test_url, MockFetcher(fetch_values))
     #TODO Start here. Print the urls to a file.
-    driver.output_file = "./tests/output"
+    driver.output_file = "./tests/testcases/output"
     f = open(driver.output_file, 'w')
     f.truncate()
     f.close()
