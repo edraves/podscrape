@@ -177,6 +177,7 @@ def test_next_url():
 #    assert_equal(driver.pages[0].string, "2")
 
 #    driver = Driver(test_url3, MockFetcher(fetch_values))
+#TODO Need to slice out letters and pages
 #    assert_equal(driver.letters[0].string, "N")
 #    assert_equal(driver.pages[0].string, "2")
 

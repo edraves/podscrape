@@ -4,6 +4,7 @@ from nose.tools import *
 first_page_filename = "./tests/testcases/itunes_arts_page.html"
 page_num_filename = "./tests/testcases/itunes_arts_page_letter_a.html"
 music_page_filename = "./tests/testcases/itunes_music_page.html"
+food_page_filename = "./tests/testcases/itunes_arts_food_page.html"
 
 def test_make_soup():
     scraper = Scraper(first_page_filename)
@@ -81,3 +82,13 @@ def test_get_page_tags():
     assert_equal(page_tags[0].string, "2")
     assert_equal(page_tags[-1].string, "7")
 
+def test_get_current_subgenre():
+    #Test a page that has a subgenre
+    scraper = Scraper(food_page_filename)
+    current_subgenre = scraper.get_currently_selected_subgenre()
+    assert_equal(current_subgenre.string, "Food")
+
+    #Test a page that doesn't have one
+    scraper = Scraper(first_page_filename)
+    current_subgenre = scraper.get_currently_selected_subgenre()
+    assert_equal(current_subgenre, None)

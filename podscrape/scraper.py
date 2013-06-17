@@ -44,6 +44,15 @@ class Scraper(object):
         else:
             return None
 
+    def get_currently_selected_subgenre(self):
+        """Return the Tag of the currently selected subgenre"""
+        selected = None
+        subgenres = self.get_subgenre_tags()
+        if subgenres:
+            parent_list = subgenres[0].parent.parent
+            selected = parent_list.find("a", class_="selected")
+        return selected
+
     def get_number_of_pages(self):
         page_soup = self.soup.find("ul", class_="list paginate")
 

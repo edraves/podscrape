@@ -40,7 +40,7 @@ class Driver:
 #                        self.letters[0:letter_index] = []
 
         #Loop through to see which tag has selected in the class
-        self.current_subgenre = self.get_currently_selected_subgenre()
+        self.current_subgenre = scraper.get_currently_selected_subgenre()
         self.current_genre = self.get_currently_selected_genre()
 
         #We want to slice out the preceding genres, so we start in the
@@ -64,22 +64,12 @@ class Driver:
     # If the current genre is a subgenre, we want to continue forward from
     # its parent later
             else:
-                subgenre = self.get_currently_selected_subgenre()
+                subgenre = self.current_subgenre
                 if subgenre:
                     parent_li = subgenre.parent.parent.parent
                     selected = parent_li.find("a", class_="top-level-genre")
         return selected
 
-    def get_currently_selected_subgenre(self):
-        selected = None
-        if self.subgenres:
-            parent_list = self.subgenres[0].parent.parent
-            selected = parent_list.find("a", class_="selected")
-#            for tag in self.subgenres:
-#                if "selected" in tag['class']:
-#                    selected = tag
-#                    break
-        return selected
 #first cycle through pages, then letters, then subgenres, then move to the
 #next genre.
 #Remember that the first page of any letter is no page at all, to scrape the
