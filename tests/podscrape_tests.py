@@ -5,6 +5,7 @@ first_page_filename = "./tests/testcases/itunes_arts_page.html"
 page_num_filename = "./tests/testcases/itunes_arts_page_letter_a.html"
 music_page_filename = "./tests/testcases/itunes_music_page.html"
 food_page_filename = "./tests/testcases/itunes_arts_food_page.html"
+society_n2_filename = "./tests/testcases/itunes_society_and_culture_n_2.html"
 
 def test_make_soup():
     scraper = Scraper(first_page_filename)
@@ -108,3 +109,19 @@ def test_get_current_genre():
     scraper = Scraper(food_page_filename)
     current_genre = scraper.get_currently_selected_genre()
     assert_equal(current_genre.string, "Arts")
+
+def test_get_current_letter():
+    #Test a page with a letter selected
+    scraper = Scraper(page_num_filename)
+    current_letter = scraper.get_currently_selected_letter()
+    assert_equal(current_letter.string, "A")
+
+    #Test a page with a letter other than "A"
+    scraper = Scraper(society_n2_filename)
+    current_letter = scraper.get_currently_selected_letter()
+    assert_equal(current_letter.string, "N")
+
+    #Test a page without a letter selected
+    scraper = Scraper(first_page_filename)
+    current_letter = scraper.get_currently_selected_letter()
+    assert_equal(current_letter, None)

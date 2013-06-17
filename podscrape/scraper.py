@@ -96,6 +96,15 @@ class Scraper(object):
             a_list = None
         return a_list
 
+    def get_currently_selected_letter(self):
+        """Returns the Tag for the current letter"""
+        selected = None
+        letters = self.get_letter_tags()
+        if letters:
+            parent_list = letters[0].parent.parent
+            selected = parent_list.find("a", class_="selected")
+        return selected
+
     def get_page_tags(self):
         page_soup = self.soup.find("ul", class_="list paginate")
         a_list = None
