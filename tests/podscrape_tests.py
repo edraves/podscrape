@@ -92,3 +92,19 @@ def test_get_current_subgenre():
     scraper = Scraper(first_page_filename)
     current_subgenre = scraper.get_currently_selected_subgenre()
     assert_equal(current_subgenre, None)
+
+def test_get_current_genre():
+    #Test that a page has a genre selected
+    scraper = Scraper(first_page_filename)
+    current_genre = scraper.get_currently_selected_genre()
+    assert_equal(current_genre.string, "Arts")
+
+    #Test that a page that isn't the base page
+    scraper = Scraper(music_page_filename)
+    current_genre = scraper.get_currently_selected_genre()
+    assert_equal(current_genre.string, "Music")
+
+    #Test a page that has a subgenre selected
+    scraper = Scraper(food_page_filename)
+    current_genre = scraper.get_currently_selected_genre()
+    assert_equal(current_genre.string, "Arts")

@@ -25,6 +25,29 @@ class Scraper(object):
             urls.append(tag.get('href'))
         return urls
 
+    def get_currently_selected_genre(self):
+        """
+        Return the Tag for the current genre
+
+        If the current genre element with a "selected" css class is a
+        subgenre, this will return the subgenre's parent genre.
+
+        """
+        selected = None
+        genres = self.get_top_level_genre_tags()
+        if genres:
+            for tag in genres:
+                if "selected" in tag['class']:
+                    selected = tag
+                    break
+            #No hits in genres means a subgenre is currently selected
+            else:
+                subgenre = self.get_currently_selected_subgenre()
+                if subgenre:
+                    parent_li = subgenre.parent.parent.parent
+                    selected = parent_li.find("a", class_="top-level-genre")
+        return selected
+
     def get_subgenre_tags(self):
         genre_soup = self.soup.find("div", id="genre-nav")
         subgenre_soup = genre_soup.find(class_="list top-level-subgenres")
