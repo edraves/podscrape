@@ -130,19 +130,20 @@ def test_next_subgenre_from_middle():
     subgenre = driver.next_subgenre()
     assert_equal(subgenre, None)
 
-def test_next_letter():
-    driver = Driver(test_url, MockFetcher(fetch_values))
+#def test_next_letter():
+#    TODO is this even necessary?
+#    driver = Driver(test_url, MockFetcher(fetch_values))
 
-    for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
-        assert_equal(driver.next_letter(), let)
+#    for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
+#        assert_equal(driver.next_letter(), let)
 
-    assert_equal(driver.next_letter(), None)
-    assert_equal(driver.next_letter(), "A")
+#    assert_equal(driver.next_letter(), None)
+#    assert_equal(driver.next_letter(), "A")
 
-def test_next_letter_from_middle():
-    driver = Driver(test_url3, MockFetcher(fetch_values))
-    letter = driver.next_letter()
-    assert_equal(letter, "O")
+#def test_next_letter_from_middle():
+#    driver = Driver(test_url3, MockFetcher(fetch_values))
+#    letter = driver.next_letter()
+#    assert_equal(letter, "O")
 
 def test_process_page():
     fetcher = MockFetcher(fetch_values)
@@ -159,7 +160,7 @@ def test_process_page():
     assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/a-gs-picture-this!/id333260901")
     assert_equal(podcast_urls[-1], "https://itunes.apple.com/us/podcast/aireslibre-travel-show-blog/id403538684")
     assert_equal(len(driver.pages), 6)
-    assert_equal(len(driver.letters), 27)
+    assert_equal(len(driver.letters), 26)
 
 def test_next_url():
     fetcher = MockFetcher(fetch_values)
@@ -171,19 +172,40 @@ def test_next_url():
     expected_url = "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2&letter=A&page=2#page"
     assert_equal(next_url, expected_url)
 
-#def test_starting_state():
-#    driver = Driver(test_url2, MockFetcher(fetch_values))
-#    assert_equal(driver.letters[0].string, "A")
-#    assert_equal(driver.pages[0].string, "2")
+def test_starting_state():
+    driver = Driver(test_url, MockFetcher(fetch_values))
+    assert_equal(driver.current_genre.string, "Arts")
+    assert_equal(driver.current_subgenre, None)
+    assert_equal(driver.current_letter, None)
+    assert_equal(driver.current_page, None)
 
-#    driver = Driver(test_url3, MockFetcher(fetch_values))
-#TODO Need to slice out letters and pages
-#    assert_equal(driver.letters[0].string, "N")
-#    assert_equal(driver.pages[0].string, "2")
+    driver = Driver(test_url2, MockFetcher(fetch_values))
+    assert_equal(driver.current_genre.string, "Arts")
+    assert_equal(driver.current_subgenre, None)
+    assert_equal(driver.current_letter.string, "A")
+    assert_equal(driver.current_page.string, "1")
+
+    driver = Driver(test_url3, MockFetcher(fetch_values))
+    assert_equal(driver.current_genre.string, "Society & Culture")
+    assert_equal(driver.current_subgenre, None)
+    assert_equal(driver.current_letter.string, "N")
+    assert_equal(driver.current_page.string, "2")
+
+    driver = Driver(test_url4, MockFetcher(fetch_values))
+    assert_equal(driver.current_genre.string, "Music")
+    assert_equal(driver.current_subgenre, None)
+    assert_equal(driver.current_letter, None)
+    assert_equal(driver.current_page, None)
+
+    driver = Driver(test_url5, MockFetcher(fetch_values))
+    assert_equal(driver.current_genre.string, "Arts")
+    assert_equal(driver.current_subgenre.string, "Food")
+    assert_equal(driver.current_letter, None)
+    assert_equal(driver.current_page, None)
 
 def test_print_urls():
     driver = Driver(test_url, MockFetcher(fetch_values))
-    #TODO Start here. Print the urls to a file.
+    #TODO Edge case here: url for "#" is "letter=*"
     driver.output_file = "./tests/testcases/output"
     f = open(driver.output_file, 'w')
     f.truncate()

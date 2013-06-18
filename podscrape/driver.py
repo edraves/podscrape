@@ -8,7 +8,6 @@ class Driver:
         self.history = []
         self.alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
         self.unicode_alpha = u"ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
-        self.current_letter, self.current_page = parse_url(starting_url)
         self.populate_state()
 
 #set up genre list, and subgenre list
@@ -19,29 +18,11 @@ class Driver:
         self.letters = scraper.get_letter_tags()
         self.pages = scraper.get_page_tags()
 
-#        if self.letters:
-#            if self.current_letter:
-#                print "have letters, and current_letter"
-#                for idx, tag in enumerate(self.letters):
-#                    if tag['href'].find(unicode(self.start)) >= 0:
-#                        print "Url is in letters, index: %r" % idx
-#                        self.letters[0:idx] = []
-
-#            elif self.pages:
-#                print "pages exists"
-#                print "self.start: %r" % self.start
-#                for idx, tag in enumerate(self.pages):
-#                    print "href: %r" % tag['href']
-#                    if tag['href'].find(unicode(self.start)) >= 0:
-#                        print "Url is in pages, index: ", idx
-#                        self.pages[0:idx] = []
-#                        letter_index = self.unicode_alpha.find(self.current_letter)
-#                        print "letter index: %r" % letter_index
-#                        self.letters[0:letter_index] = []
-
         #Loop through to see which tag has selected in the class
         self.current_subgenre = scraper.get_currently_selected_subgenre()
         self.current_genre = scraper.get_currently_selected_genre()
+        self.current_letter = scraper.get_currently_selected_letter()
+        self.current_page = scraper.get_currently_selected_page()
 
         #We want to slice out the preceding genres, so we start in the
         #right place. Add one to remove the current genre from the list
@@ -53,6 +34,15 @@ class Driver:
         if self.current_subgenre:
             current_index = self.subgenres.index(self.current_subgenre) + 1
             self.subgenres[0:current_index] = []
+
+        if self.current_letter:
+            current_index = self.letters.index(self.current_letter) + 1
+            self.letters[0:current_index] = []
+
+        if self.current_page:
+            if self.current_page in self.pages:
+                current_index = self.pages.index(self.current_page) + 1
+                self.pages[0:current_index] = []
 
 #first cycle through pages, then letters, then subgenres, then move to the
 #next genre.
@@ -85,18 +75,6 @@ class Driver:
         else:
             self.current_subgenre = None
         return self.current_subgenre
-
-    def next_letter(self):
-        if self.current_letter:
-            if self.current_letter is "#":
-                self.current_letter = None
-            else:
-                index = self.alpha.find(self.current_letter)
-                self.current_letter = self.alpha[index + 1]
-                return self.current_letter
-        else:
-            self.current_letter = self.alpha[0]
-            return self.current_letter
 
     def process_page(self, scraper):
         if not self.pages:
