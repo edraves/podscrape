@@ -125,3 +125,19 @@ def test_get_current_letter():
     scraper = Scraper(first_page_filename)
     current_letter = scraper.get_currently_selected_letter()
     assert_equal(current_letter, None)
+
+def test_get_current_page():
+    #Test a page with a number selected
+    scraper = Scraper(page_num_filename)
+    current_page = scraper.get_currently_selected_page()
+    assert_equal(current_page.string, "1")
+
+    #Test a page that's not page 1
+    scraper = Scraper(society_n2_filename)
+    current_page = scraper.get_currently_selected_page()
+    assert_equal(current_page.string, "2")
+
+    #Test a page without a paginator
+    scraper = Scraper(first_page_filename)
+    current_page = scraper.get_currently_selected_page()
+    assert_equal(current_page, None)

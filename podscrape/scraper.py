@@ -122,6 +122,20 @@ class Scraper(object):
             a_list.pop(0)
         return a_list
 
+    def get_currently_selected_page(self):
+        """
+        Returns the Tag for the current page
+
+        Only returns a page if there's something in the paginator
+
+        """
+        selected = None
+        pages = self.get_page_tags()
+        if pages:
+            parent_list = pages[0].parent.parent
+            selected = parent_list.find("a", class_="selected")
+        return selected
+
 def make_soup_from_file(filename):
     handle = open(filename)
     text = handle.read()
