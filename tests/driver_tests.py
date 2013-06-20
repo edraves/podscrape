@@ -118,20 +118,21 @@ def test_next_subgenre_from_middle():
     subgenre = driver.next_subgenre()
     assert_equal(subgenre, None)
 
-#def test_next_letter():
-#    TODO is this even necessary?
-#    driver = Driver(test_url, MockFetcher(fetch_values))
+def test_next_letter():
+    driver = Driver(test_url, MockFetcher(fetch_values))
 
-#    for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
-#        assert_equal(driver.next_letter(), let)
+    for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
+        assert_equal(driver.next_letter().string, let)
 
-#    assert_equal(driver.next_letter(), None)
-#    assert_equal(driver.next_letter(), "A")
+    assert_equal(driver.next_letter(), None)
+    #Should NOT loop back to "A", because we haven't repopulated
+    #the queue.
+    assert_equal(driver.next_letter(), None)
 
-#def test_next_letter_from_middle():
-#    driver = Driver(test_url3, MockFetcher(fetch_values))
-#    letter = driver.next_letter()
-#    assert_equal(letter, "O")
+def test_next_letter_from_middle():
+    driver = Driver(test_url3, MockFetcher(fetch_values))
+    letter = driver.next_letter()
+    assert_equal(letter.string, "O")
 
 def test_process_page():
     fetcher = MockFetcher(fetch_values)

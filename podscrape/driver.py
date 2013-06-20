@@ -72,7 +72,7 @@ class Driver:
         if self.pages:
             tag = self.pages.pop(0)
         elif self.letters:
-            tag = self.letters.pop(0)
+            tag = self.next_letter()
         elif self.subgenres:
             tag = self.next_subgenre()
         elif self.genres:
@@ -96,6 +96,14 @@ class Driver:
         else:
             self.current_subgenre = None
         return self.current_subgenre
+
+    def next_letter(self):
+        """Pop next letter from queue, and return it."""
+        if (self.letters):
+            self.current_letter = self.letters.pop(0)
+        else:
+            self.current_letter = None
+        return self.current_letter
 
     def process_page(self, scraper):
         """
