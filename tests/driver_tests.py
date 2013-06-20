@@ -123,8 +123,10 @@ def test_next_letter():
 
     for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
         assert_equal(driver.next_letter().string, let)
+        assert_equal(driver.current_letter.string, let)
 
     assert_equal(driver.next_letter(), None)
+    assert_equal(driver.current_letter, None)
     #Should NOT loop back to "A", because we haven't repopulated
     #the queue.
     assert_equal(driver.next_letter(), None)
@@ -133,6 +135,21 @@ def test_next_letter_from_middle():
     driver = Driver(test_url3, MockFetcher(fetch_values))
     letter = driver.next_letter()
     assert_equal(letter.string, "O")
+    assert_equal(driver.current_letter.string, "O")
+
+def test_next_page():
+    driver = Driver(test_url2, MockFetcher(fetch_values))
+
+    assert_equal(driver.next_page().string, "2")
+    assert_equal(driver.current_page.string, "2")
+    assert_equal(driver.next_page().string, "3")
+    assert_equal(driver.current_page.string, "3")
+
+def test_next_page_from_middle():
+    driver = Driver(test_url3, MockFetcher(fetch_values))
+    page = driver.next_page()
+    assert_equal(page.string, "3")
+    assert_equal(driver.current_page.string, "3")
 
 def test_process_page():
     fetcher = MockFetcher(fetch_values)
