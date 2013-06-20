@@ -1,11 +1,18 @@
 from bs4 import BeautifulSoup
 
 class Scraper(object):
+    """
+    Extracts elements of an iTunes Podcast directory page.
+
+    Contains the logic to navigate an iTunes Podcast directory page,
+    and extract the page elements we are interested in.
+    """
 
     def __init__(self, filename):
         self.soup = make_soup_from_file(filename)
 
     def get_itunes_podcast_urls(self):
+        """Return a list of all podcast urls on this page."""
         podcast_soup = self.soup.find("div", id="selectedcontent")
         a_list = podcast_soup.find_all("a")
         urls = []
@@ -14,11 +21,13 @@ class Scraper(object):
         return urls
 
     def get_top_level_genre_tags(self):
+        """Return a list of all top level genre tags on this page."""
         genre_soup = self.soup.find("div", id="genre-nav")
         a_list = genre_soup.find_all("a", class_="top-level-genre")
         return a_list
 
     def get_top_level_genre_urls(self):
+        """Return a list of all top level genre urls on this page."""
         a_list = self.get_top_level_genre_tags()
         urls = []
         for tag in a_list:
@@ -49,6 +58,7 @@ class Scraper(object):
         return selected
 
     def get_subgenre_tags(self):
+        """Return a list of all subgenre tags on this page."""
         genre_soup = self.soup.find("div", id="genre-nav")
         subgenre_soup = genre_soup.find(class_="list top-level-subgenres")
         if subgenre_soup:
@@ -58,6 +68,7 @@ class Scraper(object):
         return a_list
 
     def get_subgenre_urls(self):
+        """Return a list of all subgenre urls on this page."""
         a_list = self.get_subgenre_tags()
         if a_list:
             urls = []
@@ -77,6 +88,14 @@ class Scraper(object):
         return selected
 
     def get_number_of_pages(self):
+        """
+        Return the number of pages containing podcast links.
+
+        Number returned will be one higher than is visible on the page.
+        This is due to an error in Apple's paginator. Apple's
+        paginator leaves a single podcast dangling on an unlisted page.
+
+        """
         page_soup = self.soup.find("ul", class_="list paginate")
 
         if (page_soup is None):
@@ -89,6 +108,7 @@ class Scraper(object):
             return len(a_list)
 
     def get_letter_tags(self):
+        """Return a list of all letter tags on this page."""
         letter_soup = self.soup.find("ul", class_="list alpha")
         if letter_soup:
             a_list = letter_soup.find_all("a")
@@ -97,7 +117,7 @@ class Scraper(object):
         return a_list
 
     def get_currently_selected_letter(self):
-        """Returns the Tag for the current letter"""
+        """Return the Tag for the current letter"""
         selected = None
         letters = self.get_letter_tags()
         if letters:
@@ -106,6 +126,14 @@ class Scraper(object):
         return selected
 
     def get_page_tags(self):
+        """
+        Return a list of all page tags on this page.
+
+        Also adds another incremented tag to the end of the list.
+        This is because of a bug in Apple's paginator. Apple's
+        paginator leaves a single podcast dangling on an unlisted page.
+
+        """
         page_soup = self.soup.find("ul", class_="list paginate")
         a_list = None
         if page_soup:
@@ -124,7 +152,7 @@ class Scraper(object):
 
     def get_currently_selected_page(self):
         """
-        Returns the Tag for the current page
+        Return the Tag for the currently selected page
 
         Only returns a page if there's something in the paginator
 
@@ -137,6 +165,7 @@ class Scraper(object):
         return selected
 
 def make_soup_from_file(filename):
+    """Return BeautifulSoup of the text in filename"""
     handle = open(filename)
     text = handle.read()
     handle.close()

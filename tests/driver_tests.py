@@ -34,20 +34,8 @@ def test_parse_url():
 
     letter, page = parse_url(test_url3)
     assert_equal(letter, 'N')
-    assert_equal(page, 2)    
+    assert_equal(page, 2)
 
-#def test_starting_point():
-#    driver = Driver(test_url, MockFetcher(fetch_values))
-#    assert_equal(driver.current_letter, '')
-#    assert_equal(driver.current_genre.text, "Arts")
-    
-
-#    next_url = stuff.next_page()
-#    assert_equal(next_url, test_url)
-
-    #next_url = stuff.next_page()
-    #assert_equal(next_url, test_url2)
-    
 def test_next_genre():
     driver = Driver(test_url, MockFetcher(fetch_values))
     genre = driver.next_genre()

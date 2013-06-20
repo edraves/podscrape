@@ -1,33 +1,48 @@
 from bs4 import Tag
 import re
+
 class Driver:
+    """
+    Handles the traversal strategy of scraping the Podcast directory.
+
+    Takes a url to begin crawling from, and moves through each Genre,
+    Subgenre, Letter, and Page. If the url is from somewhere in the middle
+    of its traversal strategy, it does not crawl from the beginning.
+    This is so that a failed or aborted crawl can be resumed later.
+    """
 
     def __init__(self, starting_url, fetcher=None):
         self.start = starting_url
         self.fetcher = fetcher
         self.history = []
-        self.alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
-        self.unicode_alpha = u"ABCDEFGHIJKLMNOPQRSTUVWXYZ#"
         self.populate_state()
 
-#set up genre list, and subgenre list
     def populate_state(self):
+        """ 
+        Fetch starting url; establish starting state of traversal.
+
+        Populate the genre, subgenre, letter, and page queues.
+        Store which Tags are currently selected (how far
+        into the page we are starting). Remove any Tags that 
+        appear 'behind' the starting page.
+
+        """
         scraper = self.fetcher.fetch(self.start)
         self.genres = scraper.get_top_level_genre_tags()
         self.subgenres = scraper.get_subgenre_tags()
         self.letters = scraper.get_letter_tags()
         self.pages = scraper.get_page_tags()
 
-        #Loop through to see which tag has selected in the class
+        #Collect each of the current selected Tags
         self.current_subgenre = scraper.get_currently_selected_subgenre()
         self.current_genre = scraper.get_currently_selected_genre()
         self.current_letter = scraper.get_currently_selected_letter()
         self.current_page = scraper.get_currently_selected_page()
 
-        #We want to slice out the preceding genres, so we start in the
-        #right place. Add one to remove the current genre from the list
-        #TODO: If currently selected is a subgenre, remove all prior 
-        #top level genres
+        # We want to slice out the preceding genres, so we start in the
+        # right place. Add one to remove the current genre from the list.
+        # If currently selected is a subgenre, remove all prior 
+        # top level genres
         current_index = self.genres.index(self.current_genre) + 1
         self.genres[0:current_index] = []
 
@@ -44,11 +59,15 @@ class Driver:
                 current_index = self.pages.index(self.current_page) + 1
                 self.pages[0:current_index] = []
 
-#first cycle through pages, then letters, then subgenres, then move to the
-#next genre.
-#Remember that the first page of any letter is no page at all, to scrape the
-#popular page.
     def next_url(self):
+        """
+        Returns the URL we should scrape next
+
+        First cycle through pages, then letters, then subgenres, 
+        then move to the next genre. Remember that the first page of
+        any letter is no page at all, to scrape the popular page.
+
+        """
         tag = None
         if self.pages:
             tag = self.pages.pop(0)
@@ -63,6 +82,7 @@ class Driver:
         return tag['href']
 
     def next_genre(self):
+        """Pop next genre from queue, and return it."""
         if (self.genres):
             self.current_genre = self.genres.pop(0)
         else:
@@ -70,6 +90,7 @@ class Driver:
         return self.current_genre
 
     def next_subgenre(self):
+        """Pop next subgenre from queue, and return it."""
         if (self.subgenres):
             self.current_subgenre = self.subgenres.pop(0)
         else:
@@ -77,6 +98,12 @@ class Driver:
         return self.current_subgenre
 
     def process_page(self, scraper):
+        """
+        Returns the podcast urls contained by a scraper.
+
+        Also refills the navigation queues when necessary.
+        """
+        #TODO Test and hook in return_urls_not_in_history()
         if not self.pages:
             self.pages = scraper.get_page_tags()
         if not self.letters:
@@ -87,6 +114,16 @@ class Driver:
         return scraper.get_itunes_podcast_urls()
 
     def return_urls_not_in_history(self, new_urls):
+        """
+        Check a list of Tags against the fetch history
+
+        Take a list of Tags, and compare their hrefs
+        against self.history. Return any Tags with urls
+        that haven't been scraped yet as a list.
+
+        Args: new_urls - A list of Tags
+
+        """
         return_urls = []
         for item in new_urls:
              item_already_scraped = False
@@ -125,9 +162,9 @@ class Driver:
         f.write(line)
         f.write("\n")
         f.close()        
-        
-#parse out current letter, and page.
+
 def parse_url(url):
+    """Return selected letter and page of a given query string."""
     letter = None
     page = 0
     match = re.search(r"http.*\?.*letter=([A-Z#])", url)
