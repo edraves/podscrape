@@ -140,7 +140,7 @@ def test_process_page():
     podcast_urls = driver.process_page(fetcher.fetch(test_url))
     assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
     assert_equal(podcast_urls[-1], "https://itunes.apple.com/us/podcast/darker-projects-byron-chronicles/id160067986?mt=2")
-    assert_equal(driver.pages, None)
+    assert_equal(driver.pages, [])
     assert_equal(len(driver.letters), 27)
 
     driver = Driver(test_url2, fetcher)
@@ -247,6 +247,80 @@ def test_return_urls_not_in_history_real_tags_single_element():
     driver.history = tags2[0]
     new_urls = driver.return_urls_not_in_history(tags)
     assert_equal(new_urls, tags[1:])
+
+def test_repopulate_queues():
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url2, fetcher)
+
+    #Shouldn't change anything
+    before_pages = driver.pages
+    before_letters = driver.letters
+    before_subgenres = driver.subgenres
+
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(before_pages, driver.pages)
+    assert_equal(before_letters, driver.letters)
+    assert_equal(before_subgenres, driver.subgenres)
+
+def test_repopulate_queues_pages():
+
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url2, fetcher)
+    
+    before_pages = driver.pages
+
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(before_pages, driver.pages)
+
+    #move two pages into history
+    driver.history = driver.history + driver.pages[0:2]
+    after_pages = driver.pages[2::]
+
+    #wipe driver.pages, so that it will actually refresh
+    driver.pages = []
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(after_pages, driver.pages)
+
+def test_repopulate_queues_letters():
+
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url2, fetcher)
+    
+    before_letters = driver.letters
+
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(before_letters, driver.letters)
+
+    #Add the current url to history, since it would normally be there
+    driver.history.append(driver.current_letter)
+
+    #move two letters into history
+    driver.history = driver.history + driver.letters[0:2]
+    after_letters = driver.letters[2::]
+
+    #wipe driver.letters, so that it will actually refresh
+    driver.letters = []
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(after_letters, driver.letters)
+
+def test_repopulate_queues_subgenres():
+
+    fetcher = MockFetcher(fetch_values)
+    driver = Driver(test_url2, fetcher)
+    
+    before_subgenres = driver.subgenres
+
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(before_subgenres, driver.subgenres)
+
+    #move two subgenres into history
+    driver.history = driver.history + driver.subgenres[0:2]
+    after_subgenres = driver.subgenres[2::]
+
+    #wipe driver.subgenres, so that it will actually refresh
+    driver.subgenres = []
+    driver.repopulate_queues(fetcher.fetch(test_url2))
+    assert_equal(after_subgenres, driver.subgenres)
 
 """
 Driver notes

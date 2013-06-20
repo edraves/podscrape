@@ -103,15 +103,28 @@ class Driver:
 
         Also refills the navigation queues when necessary.
         """
-        #TODO Test and hook in return_urls_not_in_history()
-        if not self.pages:
-            self.pages = scraper.get_page_tags()
-        if not self.letters:
-            self.letters = scraper.get_letter_tags()
-        if not self.subgenres:
-            self.subgenres = scraper.get_subgenre_tags()
-
+        self.repopulate_queues(scraper)
         return scraper.get_itunes_podcast_urls()
+
+    def repopulate_queues(self, scraper):
+        """
+        Refresh the queues from currently scraped page
+
+        Will only update a queue if it's empty. If it's not,
+        we're in the stretch where a refresh would just re-add
+        the urls we've already queued or fetched.
+
+        Compare the urls against the history to prevent re-scraping
+        """
+        if not self.pages:
+            page_tags = scraper.get_page_tags()
+            self.pages = self.return_urls_not_in_history(page_tags)
+        if not self.letters:
+            tags = scraper.get_letter_tags()
+            self.letters = self.return_urls_not_in_history(tags)
+        if not self.subgenres:
+            tags = scraper.get_subgenre_tags()
+            self.subgenres = self.return_urls_not_in_history(tags)
 
     def return_urls_not_in_history(self, new_urls):
         """
@@ -125,26 +138,22 @@ class Driver:
 
         """
         return_urls = []
-        for item in new_urls:
-             item_already_scraped = False
+        if new_urls:
+            for item in new_urls:
+                item_already_scraped = False
 
-             if isinstance(self.history, Tag):
-                 if item['href'] == self.history['href']:
-                     item_already_scraped = True
+                if isinstance(self.history, Tag):
+                    if item['href'] == self.history['href']:
+                        item_already_scraped = True
 
-             else:
-                 for previous_url in self.history:
-                     print "item: %r", (item)
-                     print "previous: %r", (previous_url)
-                     if item['href'] == previous_url['href']:
-                         item_already_scraped = True
-                         break
+                else:
+                    for previous_url in self.history:
+                        if item['href'] == previous_url['href']:
+                            item_already_scraped = True
+                            break
 
-             if not item_already_scraped:
-                 return_urls.append(item)
-
-        if len(return_urls) == 0:
-            return_urls = None
+                if not item_already_scraped:
+                    return_urls.append(item)
 
         return return_urls
 
