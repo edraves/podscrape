@@ -352,22 +352,3 @@ def test_crawl():
     # 16 genres + 6 subgenres + 27 letters
     assert_equal(len(driver.history), 49)
     assert_equal(driver.history[-1].string, "Technology")
-
-"""
-Driver notes
-Driver(url)
-start from that url, get genre list, subgenre list, then scrape popular, and continue from the start of the currently selected genre.
-
-Driver(url)
-if url includes a letter, start from that letter and move through. numerically, then alphabetically.
-
-if url includes a page number, start at that page, then continue through.
-
-Other potential classes
-Fetcher. Fetcher takes a url and returns a scraper
-or takes a url and returns a json
-fetcher.fetch(url)
-fetcher.lookup(url)
-
-Rate Limiter
-"""
