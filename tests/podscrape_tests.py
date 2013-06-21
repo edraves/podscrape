@@ -24,8 +24,8 @@ def test_get_top_level_genre_urls():
     genre_urls = scraper.get_top_level_genre_urls()
 
     assert_equal(len(genre_urls), 16)
-    assert_equal(genre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2")
-    assert_equal(genre_urls[1], "https://itunes.apple.com/us/genre/podcasts-business/id1321?mt=2")
+    assert_equal(genre_urls[0].href, "https://itunes.apple.com/us/genre/podcasts-arts/id1301?mt=2")
+    assert_equal(genre_urls[1].href, "https://itunes.apple.com/us/genre/podcasts-business/id1321?mt=2")
 
 def test_get_top_level_genre_tags():
     scraper = Scraper(first_page_filename)
@@ -40,7 +40,7 @@ def test_get_subgenre_urls():
     subgenre_urls = scraper.get_subgenre_urls()
 
     assert_equal(len(subgenre_urls), 6)
-    assert_equal(subgenre_urls[0], "https://itunes.apple.com/us/genre/podcasts-arts-design/id1402?mt=2")
+    assert_equal(subgenre_urls[0].href, "https://itunes.apple.com/us/genre/podcasts-arts-design/id1402?mt=2")
 
 def test_get_subgenre_urls_no_entries():
     scraper = Scraper(music_page_filename)
@@ -77,9 +77,21 @@ def test_get_letter_tags():
     assert_equal(letter_tags[0].string, "A")
     assert_equal(letter_tags[-1].string, "#")
 
+def test_get_letter_urls():
+    scraper = Scraper(first_page_filename)
+    letter_tags = scraper.get_letter_urls()
+    assert_equal(letter_tags[0].string, "A")
+    assert_equal(letter_tags[-1].string, "#")
+
 def test_get_page_tags():
     scraper = Scraper(page_num_filename)
     page_tags = scraper.get_page_tags()
+    assert_equal(page_tags[0].string, "2")
+    assert_equal(page_tags[-1].string, "7")
+
+def test_get_page_urls():
+    scraper = Scraper(page_num_filename)
+    page_tags = scraper.get_page_urls()
     assert_equal(page_tags[0].string, "2")
     assert_equal(page_tags[-1].string, "7")
 
@@ -92,6 +104,17 @@ def test_get_current_subgenre():
     #Test a page that doesn't have one
     scraper = Scraper(first_page_filename)
     current_subgenre = scraper.get_currently_selected_subgenre()
+    assert_equal(current_subgenre, None)
+
+def test_get_current_subgenre_tag():
+    #Test a page that has a subgenre
+    scraper = Scraper(food_page_filename)
+    current_subgenre = scraper._get_currently_selected_subgenre_tag()
+    assert_equal(current_subgenre.string, "Food")
+
+    #Test a page that doesn't have one
+    scraper = Scraper(first_page_filename)
+    current_subgenre = scraper._get_currently_selected_subgenre_tag()
     assert_equal(current_subgenre, None)
 
 def test_get_current_genre():
