@@ -19,7 +19,7 @@ Running the Unit Tests::
 
 Dependencies:
     - beautifulsoup4: for parsing and extracting content from web pages
-    - nose: for testing (though some of the tests are usable with unittest
+    - nose: for testing (though some of the tests are usable with unittest)
     - requests: for making http requests
 
 Set up the Python environment
