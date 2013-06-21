@@ -9,8 +9,8 @@ class Scraper(object):
     and extract the page elements we are interested in.
     """
 
-    def __init__(self, filename):
-        self.soup = make_soup_from_file(filename)
+    def __init__(self, text):
+        self.soup = BeautifulSoup(text)
 
     def get_itunes_podcast_urls(self):
         """Return a list of all podcast urls on this page."""

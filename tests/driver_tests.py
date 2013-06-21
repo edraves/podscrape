@@ -1,6 +1,6 @@
 from nose.tools import *
 from bs4 import BeautifulSoup
-from tests.mocks import MockFetcher, MockSingleResultFetcher
+from tests.mocks import MockFetcher, MockSingleResultFetcher, text_from_file
 from podscrape.driver import Driver, parse_url
 from podscrape.scraper import Scraper
 
@@ -216,7 +216,7 @@ def test_print_urls():
     f = open(driver.output_file, 'w')
     f.truncate()
     f.close()
-    scraper = Scraper(test_url_file)
+    scraper = Scraper(text_from_file(test_url_file))
     url_list = scraper.get_itunes_podcast_urls()
     source_url = test_url
     genre = "Arts"
@@ -240,11 +240,11 @@ def test_return_urls_not_in_history_real_tags():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url3, fetcher)
 
-    scraper = Scraper(test_url3_file)
+    scraper = Scraper(text_from_file(test_url3_file))
     tags = scraper.get_letter_urls()
     #Using two different scrapers because the tags will come from 
     #two different scrapers in real life
-    scraper2 = Scraper(test_url3_file)
+    scraper2 = Scraper(text_from_file(test_url3_file))
     tags2 = scraper2.get_letter_urls()
 
     driver.history = tags2[0:3]
@@ -255,11 +255,11 @@ def test_return_urls_not_in_history_real_tags_single_element():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url3, fetcher)
 
-    scraper = Scraper(test_url3_file)
+    scraper = Scraper(text_from_file(test_url3_file))
     tags = scraper.get_letter_urls()
     #Using two different scrapers because the tags will come from 
     #two different scrapers in real life
-    scraper2 = Scraper(test_url3_file)
+    scraper2 = Scraper(text_from_file(test_url3_file))
     tags2 = scraper2.get_letter_urls()
 
     driver.history = tags2[0]
