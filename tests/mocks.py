@@ -6,3 +6,11 @@ class MockFetcher(object):
 
     def fetch(self, url):
         return Scraper(self.return_values[url])
+
+class MockSingleResultFetcher(object):
+
+    def __init__(self, return_file):
+        self.return_file = return_file
+
+    def fetch(self, url):
+        return Scraper(self.return_file)

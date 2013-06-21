@@ -59,6 +59,25 @@ class Driver:
                 current_index = self.pages.index(self.current_page) + 1
                 self.pages[0:current_index] = []
 
+        return scraper
+
+    def crawl(self):
+        """
+        Begin the main crawling loop
+
+        Start by populating the state of the queues, 
+        and process the starting_url
+
+        """
+        scraper = self.populate_state()
+        self.process_page(scraper)
+        self.history.append(Url(self.start))
+        
+        while self.genres or self.subgenres or self.letters or self.pages:
+            url = self.next_url()
+            scraper = self.fetcher.fetch(url)
+            self.process_page(scraper)
+
     def next_url(self):
         """
         Returns the URL we should scrape next

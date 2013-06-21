@@ -1,6 +1,6 @@
 from nose.tools import *
 from bs4 import BeautifulSoup
-from tests.mocks import MockFetcher
+from tests.mocks import MockFetcher, MockSingleResultFetcher
 from podscrape.driver import Driver, parse_url
 from podscrape.scraper import Scraper
 
@@ -339,6 +339,19 @@ def test_repopulate_queues_subgenres():
     driver.subgenres = []
     driver.repopulate_queues(fetcher.fetch(test_url2))
     assert_equal(after_subgenres, driver.subgenres)
+
+def test_crawl():
+    fetcher = MockSingleResultFetcher(test_url_file)
+    driver = Driver(test_url2, fetcher)
+    driver.crawl()
+
+    assert_true(len(driver.history) > 32)
+
+    #Since we're feeding the same page in repeatedly, 
+    #it is only fetching urls that are on that page.
+    # 16 genres + 6 subgenres + 27 letters
+    assert_equal(len(driver.history), 49)
+    assert_equal(driver.history[-1].string, "Technology")
 
 """
 Driver notes
