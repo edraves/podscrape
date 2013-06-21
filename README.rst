@@ -12,6 +12,11 @@ The reason for scraping the web pages is to collect each of the podcast urls, wh
 
 A sample script is included in the root directory of the project. It starts from near the end of the list. If you want to run it from the beginning, the very first url is in a comment in the script. Keep Control+C handy, it will probably run for a while if you let it. I haven't tested to see what kind of rate limiting Apple does, or if they have cutoffs. So consider that before running from the beginning.
 
+Running the Unit Tests::
+
+    # Once nose is installed
+    $ nosetests
+
 Dependencies:
     - beautifulsoup4: for parsing and extracting content from web pages
     - nose: for testing (though some of the tests are usable with unittest
