@@ -44,4 +44,15 @@ class FileOutput(object):
         line = "\t".join(output_list)
         f.write(line)
         f.write("\n")
-        f.close()    
+        f.close()
+
+    def write_lookup_info(self, podcast_list):
+        f = open(self.lookup_filename, 'a')
+
+        for podcast in podcast_list:
+            line_elements = [str(podcast.itunes_id), podcast.title, podcast.feed_url]
+            line = "\t".join(line_elements)
+            line = line + "\n"
+            f.write(line)
+
+        f.close()

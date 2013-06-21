@@ -1,3 +1,5 @@
 *.pyc
 *~
 tests/testcases/output
+tests/testcases/scrape.csv
+tests/testcases/lookups.csv
