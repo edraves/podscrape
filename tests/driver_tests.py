@@ -38,6 +38,7 @@ def test_parse_url():
 
 def test_next_genre():
     driver = Driver(test_url, MockFetcher(fetch_values))
+    driver.populate_state()
     genre = driver.next_genre()
     assert_equal(genre.string, "Business")
     genre = driver.next_genre()
@@ -73,11 +74,13 @@ def test_next_genre():
 
 def test_next_genre_from_middle():
     driver = Driver(test_url3, MockFetcher(fetch_values))
+    driver.populate_state()
     genre = driver.next_genre()
     assert_equal(genre.string, "Sports & Recreation")
 
 def test_next_subgenre():
     driver = Driver(test_url, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Arts")
     assert_equal(driver.current_subgenre, None)
 
@@ -98,6 +101,7 @@ def test_next_subgenre():
 
 def test_next_subgenre_music():
     driver = Driver(test_url4, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Music")
     assert_equal(driver.current_subgenre, None)
 
@@ -106,6 +110,7 @@ def test_next_subgenre_music():
 
 def test_next_subgenre_from_middle():
     driver = Driver(test_url5, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Arts")
     assert_equal(driver.current_subgenre.string, "Food")
 
@@ -120,6 +125,7 @@ def test_next_subgenre_from_middle():
 
 def test_next_letter():
     driver = Driver(test_url, MockFetcher(fetch_values))
+    driver.populate_state()
 
     for let in "ABCDEFGHIJKLMNOPQRSTUVWXYZ#":
         assert_equal(driver.next_letter().string, let)
@@ -133,12 +139,14 @@ def test_next_letter():
 
 def test_next_letter_from_middle():
     driver = Driver(test_url3, MockFetcher(fetch_values))
+    driver.populate_state()
     letter = driver.next_letter()
     assert_equal(letter.string, "O")
     assert_equal(driver.current_letter.string, "O")
 
 def test_next_page():
     driver = Driver(test_url2, MockFetcher(fetch_values))
+    driver.populate_state()
 
     assert_equal(driver.next_page().string, "2")
     assert_equal(driver.current_page.string, "2")
@@ -147,6 +155,7 @@ def test_next_page():
 
 def test_next_page_from_middle():
     driver = Driver(test_url3, MockFetcher(fetch_values))
+    driver.populate_state()
     page = driver.next_page()
     assert_equal(page.string, "3")
     assert_equal(driver.current_page.string, "3")
@@ -154,6 +163,7 @@ def test_next_page_from_middle():
 def test_process_page():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url, fetcher)
+    driver.populate_state()
     assert_equal(len(driver.letters), 27)
     podcast_urls = driver.process_page(fetcher.fetch(test_url))
     assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/the-moth-podcast/id275699983?mt=2")
@@ -162,6 +172,7 @@ def test_process_page():
     assert_equal(len(driver.letters), 27)
 
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
     podcast_urls = driver.process_page(fetcher.fetch(test_url2))
     assert_equal(podcast_urls[0], "https://itunes.apple.com/us/podcast/a-gs-picture-this!/id333260901")
     assert_equal(podcast_urls[-1], "https://itunes.apple.com/us/podcast/aireslibre-travel-show-blog/id403538684")
@@ -171,6 +182,7 @@ def test_process_page():
 def test_next_url():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url, fetcher)
+    driver.populate_state()
     next_url = driver.next_url()
     assert_equal(next_url, test_url2)
     urls = driver.process_page(fetcher.fetch(next_url))
@@ -180,30 +192,35 @@ def test_next_url():
 
 def test_starting_state():
     driver = Driver(test_url, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Arts")
     assert_equal(driver.current_subgenre, None)
     assert_equal(driver.current_letter, None)
     assert_equal(driver.current_page, None)
 
     driver = Driver(test_url2, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Arts")
     assert_equal(driver.current_subgenre, None)
     assert_equal(driver.current_letter.string, "A")
     assert_equal(driver.current_page.string, "1")
 
     driver = Driver(test_url3, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Society & Culture")
     assert_equal(driver.current_subgenre, None)
     assert_equal(driver.current_letter.string, "N")
     assert_equal(driver.current_page.string, "2")
 
     driver = Driver(test_url4, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Music")
     assert_equal(driver.current_subgenre, None)
     assert_equal(driver.current_letter, None)
     assert_equal(driver.current_page, None)
 
     driver = Driver(test_url5, MockFetcher(fetch_values))
+    driver.populate_state()
     assert_equal(driver.current_genre.string, "Arts")
     assert_equal(driver.current_subgenre.string, "Food")
     assert_equal(driver.current_letter, None)
@@ -211,6 +228,7 @@ def test_starting_state():
 
 def test_print_urls():
     driver = Driver(test_url, MockFetcher(fetch_values))
+    driver.populate_state()
     #TODO Edge case here: url for "#" is "letter=*"
     driver.output_file = "./tests/testcases/output"
     f = open(driver.output_file, 'w')
@@ -239,6 +257,7 @@ def test_print_urls():
 def test_return_urls_not_in_history_real_tags():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url3, fetcher)
+    driver.populate_state()
 
     scraper = Scraper(text_from_file(test_url3_file))
     tags = scraper.get_letter_urls()
@@ -254,6 +273,7 @@ def test_return_urls_not_in_history_real_tags():
 def test_return_urls_not_in_history_real_tags_single_element():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url3, fetcher)
+    driver.populate_state()
 
     scraper = Scraper(text_from_file(test_url3_file))
     tags = scraper.get_letter_urls()
@@ -269,6 +289,7 @@ def test_return_urls_not_in_history_real_tags_single_element():
 def test_repopulate_queues():
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
 
     #Shouldn't change anything
     before_pages = driver.pages
@@ -284,6 +305,7 @@ def test_repopulate_queues_pages():
 
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
     
     before_pages = driver.pages
 
@@ -303,6 +325,7 @@ def test_repopulate_queues_letters():
 
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
     
     before_letters = driver.letters
 
@@ -325,6 +348,7 @@ def test_repopulate_queues_subgenres():
 
     fetcher = MockFetcher(fetch_values)
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
     
     before_subgenres = driver.subgenres
 
@@ -343,6 +367,7 @@ def test_repopulate_queues_subgenres():
 def test_crawl():
     fetcher = MockSingleResultFetcher(test_url_file)
     driver = Driver(test_url2, fetcher)
+    driver.populate_state()
     driver.crawl()
 
     assert_true(len(driver.history) > 32)

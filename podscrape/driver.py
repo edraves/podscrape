@@ -15,7 +15,7 @@ class Driver:
         self.start = starting_url
         self.fetcher = fetcher
         self.history = []
-        self.populate_state()
+#        self.populate_state()
 
     def populate_state(self):
         """ 
