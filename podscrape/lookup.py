@@ -40,5 +40,5 @@ def itunes_id_from_url(url):
     itunes_id = None
     match = re.search(r"http.*/id(\d+)", url)
     if match:
-        itunes_id = match.group(1)
+        itunes_id = int(match.group(1))
     return itunes_id
