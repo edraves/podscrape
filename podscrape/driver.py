@@ -15,7 +15,6 @@ class Driver:
         self.start = starting_url
         self.fetcher = fetcher
         self.history = []
-#        self.populate_state()
 
     def populate_state(self):
         """ 
@@ -70,9 +69,9 @@ class Driver:
 
         """
         scraper = self.populate_state()
-        self.process_page(scraper)
         self.history.append(Url(self.start))
-        
+        self.process_page(scraper)
+
         while self.genres or self.subgenres or self.letters or self.pages:
             url = self.next_url()
             scraper = self.fetcher.fetch(url)
