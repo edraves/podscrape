@@ -11,6 +11,9 @@ class Url(object):
         return self.__dict__ == other.__dict__
 
 class Podcast(object):
+    """
+    Holds the useful components of a Podcast entry
+    """
 
     def __init__(self, itunes_id, title, feed_url):
         self.itunes_id = itunes_id

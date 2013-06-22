@@ -1,7 +1,7 @@
 from models import Url
 import re
 
-class Driver:
+class Driver(object):
     """
     Handles the traversal strategy of scraping the Podcast directory.
 
@@ -11,9 +11,10 @@ class Driver:
     This is so that a failed or aborted crawl can be resumed later.
     """
 
-    def __init__(self, starting_url, fetcher=None):
+    def __init__(self, starting_url, fetcher=None, output=None):
         self.start = starting_url
         self.fetcher = fetcher
+        self.output = output
         self.history = []
 
     def populate_state(self):
@@ -70,12 +71,12 @@ class Driver:
         """
         scraper = self.populate_state()
         self.history.append(Url(self.start))
-        self.process_page(scraper)
+        self.process_page(scraper, self.start)
 
         while self.genres or self.subgenres or self.letters or self.pages:
             url = self.next_url()
             scraper = self.fetcher.fetch(url)
-            self.process_page(scraper)
+            self.process_page(scraper, url)
 
     def next_url(self):
         """
@@ -131,14 +132,22 @@ class Driver:
             self.current_page = None
         return self.current_page
 
-    def process_page(self, scraper):
+    def process_page(self, scraper, source_url):
         """
         Returns the podcast urls contained by a scraper.
 
         Also refills the navigation queues when necessary.
         """
+        itunes_urls = scraper.get_itunes_podcast_urls()
+        self.output.write_scraped_info(source_url, self.current_genre,
+                                       self.current_subgenre,
+                                       self.current_letter,
+                                       self.current_page, itunes_urls)
+
+        podcasts = self.fetcher.batch_lookup(itunes_urls)
+        self.output.write_lookup_info(podcasts)
+
         self.repopulate_queues(scraper)
-        return scraper.get_itunes_podcast_urls()
 
     def repopulate_queues(self, scraper):
         """
@@ -190,31 +199,3 @@ class Driver:
                     return_urls.append(item)
 
         return return_urls
-
-    def write_urls_to_file(self, source_url, genre, subgenre, url_list):
-        f = open(self.output_file, 'a')
-        letter, page = parse_url(source_url)
-        if not subgenre:
-            subgenre = "none"
-        if not letter:
-            letter = "Popular"
-        page = str(page)
-        output_list = [source_url, genre, subgenre, letter, page]
-        output_list.extend(url_list)
-        line = "\t".join(output_list)
-        f.write(line)
-        f.write("\n")
-        f.close()        
-
-def parse_url(url):
-    """Return selected letter and page of a given query string."""
-    letter = None
-    page = 0
-    match = re.search(r"http.*\?.*letter=([A-Z#])", url)
-    if match:
-        letter = match.group(1)
-        page = 1
-    match_page = re.search(r"http.*\?.*page=(\d+)", url)
-    if match_page:
-        page = int(match_page.group(1))
-    return letter, page

@@ -1,3 +1,4 @@
+import codecs
 from unittest import TestCase
 from podscrape.models import Podcast, Url
 from podscrape.output import FileOutput
@@ -8,7 +9,7 @@ class TestFileOutput(TestCase):
         scrape_filename = "./tests/testcases/scrape.csv"
         lookup_filename = "./tests/testcases/lookups.csv"
 
-        f = open(scrape_filename, 'w')
+        f = codecs.open(scrape_filename, encoding='utf-8', mode='w')
         f.truncate()
         f.close()
         output = FileOutput(scrape_filename, lookup_filename)
@@ -24,7 +25,7 @@ class TestFileOutput(TestCase):
 
         output.write_scraped_info(source_url, genre, subgenre, letter, page, urls)
 
-        f = open(output.scrape_filename)
+        f = codecs.open(output.scrape_filename, encoding='utf-8')
         text = f.read()
         f.close()
         split_text = text.split("\t")
@@ -49,7 +50,7 @@ class TestFileOutput(TestCase):
         scrape_filename = "./tests/testcases/scrape.csv"
         lookup_filename = "./tests/testcases/lookups.csv"
 
-        f = open(lookup_filename, 'w')
+        f = codecs.open(lookup_filename, encoding='utf-8', mode='w')
         f.truncate()
         f.close()
         output = FileOutput(scrape_filename, lookup_filename)
@@ -60,7 +61,7 @@ class TestFileOutput(TestCase):
         ]
 
         output.write_lookup_info(podcasts)
-        f = open(output.lookup_filename)
+        f = codecs.open(output.lookup_filename, encoding='utf-8')
         text = f.read()
         f.close()
         split_rows = text.split("\n")

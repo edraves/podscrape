@@ -1,4 +1,6 @@
 from podscrape.scraper import Scraper
+from podscrape.models import Podcast
+
 class MockFetcher(object):
 
     def __init__(self, return_values):
@@ -8,6 +10,12 @@ class MockFetcher(object):
         text = text_from_file(self.return_values[url])
         return Scraper(text)
 
+    def batch_lookup(self, urls):
+        podcast_list = []
+        for url in urls:
+            podcast_list.append(Podcast(1, "Title", "http://example.com/rss"))
+        return podcast_list
+
 class MockSingleResultFetcher(object):
 
     def __init__(self, return_file):
@@ -15,6 +23,12 @@ class MockSingleResultFetcher(object):
 
     def fetch(self, url):
         return Scraper(self.return_text)
+
+    def batch_lookup(self, urls):
+        podcast_list = []
+        for url in urls:
+            podcast_list.append(Podcast(1, "Title", "http://example.com/rss"))
+        return podcast_list
 
 def text_from_file(filename):
     handle = open(filename)
