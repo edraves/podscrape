@@ -134,7 +134,13 @@ class Driver(object):
 
     def process_page(self, scraper, source_url):
         """
-        Returns the podcast urls contained by a scraper.
+        Processes page elements and manages output.
+
+        Gets the iTunes urls from the scraper, 
+        Writes pertinent info to self.output
+
+        Uses fetcher to do a batch lookup of the iTunes urls.
+        Writes those podcast entries to self.output
 
         Also refills the navigation queues when necessary.
         """
